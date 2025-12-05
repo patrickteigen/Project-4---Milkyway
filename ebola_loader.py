@@ -65,6 +65,12 @@ class EbolaDataLoader:
         S, E, Z, R = Y.T
         return t, R
     
+    def simulate_SEZR_NN(self, beta0, lam, t_days, Z0=1.0):
+        y0 = np.array([self.N - Z0, 0.0, Z0, 0.0], float)  # Initial conditions: S, E, Z, R
+        t, Y = self.rk4(lambda y, t: self.f_SEZR(y, t, beta0, lam), y0, 0.0, t_days[-1], 1.0)
+        S, E, Z, R = Y.T
+        return t, S, E, Z, R
+
     def non_linear_SEZR(self, t, beta0, lam,days):
         t_model, R = self.simulate_SEZR(beta0, lam, days)
         return np.interp(t, t_model, R)
